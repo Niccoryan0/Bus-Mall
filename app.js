@@ -1,6 +1,8 @@
 'use strict';
 var ulEl = document.getElementById('list');
-
+var numImages = 3;
+var numOfImageCycles = 25;
+// ulEl.width = 'fit-content';
 // Create a constructor function that creates an object associated with each product, and has the following properties:
 // Name of the product
 // File path of image
@@ -9,9 +11,10 @@ function Item(itemName, itemImageSrc){
   this.itemName = itemName;
   this.itemImageSrc = itemImageSrc;
   this.timesClicked = 0;
-  allItems.push(this);
   this.timesShown = 0;
+  allItems.push(this);
 }
+
 
 Item.prototype.renderItem = function(){
   var newLiEl = document.createElement('li');
@@ -21,10 +24,8 @@ Item.prototype.renderItem = function(){
   newImg.id = this.itemName;
   newImg.height = '400';
 
-
   var newPEl = document.createElement('p');
   newPEl.textContent = 'Votes: ' + this.timesClicked;
-
   newLiEl.appendChild(newImg);
   newLiEl.appendChild(newPEl);
 
@@ -34,7 +35,7 @@ Item.prototype.renderItem = function(){
 // Create an algorithm that will randomly generate three unique product images from the images directory and display them side-by-side-by-side in the browser window.
 function getRandomNums() {
   var randomNums = [];
-  while(randomNums.length < 3){
+  while(randomNums.length < numImages){
     var randomNum = Math.floor(Math.random() * allItems.length);
     if(!randomNums.includes(randomNum)){
       allItems[randomNum].timesShown++;
@@ -55,7 +56,7 @@ function renderPage() {
 
 var clickCounter = 0;
 function handleVotes(voteEvent){
-  if (clickCounter < 24){
+  if (clickCounter < numOfImageCycles){
     clickCounter++;
     for (var i = 0; i < allItems.length; i++){
       if(voteEvent.target.id === allItems[i].itemName){
@@ -64,40 +65,27 @@ function handleVotes(voteEvent){
     }
     ulEl.innerHTML = '';
     renderPage();
-  } else if (clickCounter === 24){
+  } else if (clickCounter === numOfImageCycles){
     ulEl.innerHTML = '';
+
     for(var j = 0; j < allItems.length; j++){
       var newLiEl = document.createElement('li');
-
-      var newImg = document.createElement('img');
-      newImg.src = allItems[j].itemImageSrc;
-      newImg.id = allItems[j].itemName;
-      newImg.height = '400';
-
-
-      var newPEl = document.createElement('p');
-      newPEl.textContent = 'Votes: ' + allItems[j].timesClicked;
-      var newPEl2 = document.createElement('p');
-      newPEl2.textContent = 'Times Shown: ' + allItems[j].timesShown;
-
-      newLiEl.appendChild(newImg);
-      newLiEl.appendChild(newPEl);
-      newLiEl.appendChild(newPEl2);
-
-
+      newLiEl.textContent = allItems[j].itemName + ' was voted for ' + allItems[j].timesClicked + ' time(s) and shown ' + allItems[j].timesShown + ' time(s)';
       ulEl.appendChild(newLiEl);
     }
   }
+
+  // Diagnostic Tools:
   // console.log(clickCounter);
-  var timeShownTotal = 0;
-  for(var k = 0; k < allItems.length; k++){
-    timeShownTotal += allItems[k].timesShown;
-  }
-  console.log(timeShownTotal);
+  // var timeShownTotal = 0;
+  // var clickTotal = 0;
+  // for(var k = 0; k < allItems.length; k++){
+  //   timeShownTotal += allItems[k].timesShown;
+  //   clickTotal += allItems[k].timesClicked;
+  // }
+  // console.log('Total Clicks: ' + clickTotal);
+  // console.log('Total items shown: ' + timeShownTotal);
 }
-
-
-
 
 new Item('Bag', 'img/bag.jpg');
 new Item('Banana', 'img/banana.jpg');
@@ -118,6 +106,7 @@ new Item('Unicorn', 'img/unicorn.jpg');
 new Item('Usb', 'img/usb.gif');
 new Item('Water can', 'img/water-can.jpg');
 new Item('Wine glass', 'img/wine-glass.jpg');
+
 
 
 

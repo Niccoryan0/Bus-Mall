@@ -12,12 +12,11 @@ function Item(itemName, itemImageSrc){
   this.itemImageSrc = itemImageSrc;
   this.timesClicked = 0;
   this.timesShown = 0;
-  this.clickToShownRatio = this.timesClicked/this.timesShown;
   Item.allItems.push(this);
 }
 
 Item.numImages = 3;
-Item.numOfImageCycles = 25;
+Item.numOfImageCycles = 10;
 
 Item.prototype.renderItem = function(){
   var newLiEl = document.createElement('li');
@@ -38,26 +37,22 @@ Item.prototype.renderItem = function(){
 // Create an algorithm that will randomly generate three unique product images from the images directory and display them side-by-side-by-side in the browser window.
 function getRandomNums() {
   var randomNums = [];
-  console.log(currentRandomIndices);
 
   while(randomNums.length < Item.numImages){
     var randomNum = Math.floor(Math.random() * Item.allItems.length);
     var checkRepeat = false;
 
     for(var i = 0; i < currentRandomIndices.length; i++){
-      console.log('Inside for loop');
       if(currentRandomIndices.includes(randomNum)){
         checkRepeat = true;
         break;
       }
     }
 
-    console.log('For loop passed, checking number');
 
-    if(!randomNums.includes(randomNum)&& !checkRepeat){
+    if(!randomNums.includes(randomNum) && !checkRepeat){
       Item.allItems[randomNum].timesShown++;
       randomNums.push(randomNum);
-      console.log('Number stuck');
     }
   }
   currentRandomIndices = [];
@@ -67,8 +62,6 @@ function getRandomNums() {
 function renderPage() {
   var randomNums = getRandomNums();
   currentRandomIndices = randomNums;
-  console.log(currentRandomIndices);
-  console.log(randomNums);
   for (var i = 0; i < randomNums.length; i++){
     Item.allItems[randomNums[i]].renderItem();
   }
@@ -77,7 +70,8 @@ function renderPage() {
 
 var clickCounter = 0;
 function handleVotes(voteEvent){
-
+  var itemChartHead = document.getElementById('itemChartHead');
+  var ratioChartHead =document.getElementById('ratioChartHead');
   if (clickCounter < Item.numOfImageCycles){
     clickCounter++;
     for (var i = 0; i < Item.allItems.length; i++){
@@ -89,9 +83,11 @@ function handleVotes(voteEvent){
     renderPage();
   } else if (clickCounter === Item.numOfImageCycles){
     ulEl.remove();
-    headerEl.textContent = 'Here are the results!';
+    headerEl.remove();
+    itemChartHead.textContent = 'Here\'s how many times you were shown and clicked on each image:';
+    ratioChartHead.textContent = 'Here\s the clicked to shown ratio:';
     renderItemChart();
-    console.log(Item.allItems);
+    renderRatioChart();
 
 
   }
@@ -126,7 +122,11 @@ ulEl.addEventListener('click', handleVotes);
 
 function renderItemChart(){
   var ctx = document.getElementById('itemChart').getContext('2d');
+  var ratio = [];
 
+  for(i = 0; i < Item.allItems.length; i++){
+    ratio.push((Item.allItems[i].timesClicked/Item.allItems[i].timesShown));
+  }
 
 
   var itemNamesArr = [];
@@ -151,13 +151,12 @@ function renderItemChart(){
       labels: itemNamesArr,
       datasets: [{
         label: 'Number of times item was clicked',
-        backgroundColor: 'rgb(150, 10, 200, 0.4)',
-        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(150, 10, 200, 0.8)',
+        borderColor: 'rgb(1,1,1)',
         data: clicks
-      },
-      {
+      }, {
         label: 'Number of times item was shown',
-        backgroundColor: 'rgb(80, 190, 92, 0.2)',
+        backgroundColor: 'rgb(80, 190, 92, 0.6)',
         borderColor: 'rgb(30, 99, 132)',
         data: shown
       }]
@@ -168,6 +167,50 @@ function renderItemChart(){
         xAxes: [{
           stacked: true
         }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            stepSize: 1
+          }
+        }]
+      }
+    }
+  });
+}
+function renderRatioChart(){
+  var ctx = document.getElementById('ratioChart').getContext('2d');
+
+
+
+  var itemNamesArr = [];
+
+  for(var i = 0; i < Item.allItems.length; i++){
+    itemNamesArr.push(Item.allItems[i].itemName);
+  }
+
+  var ratio = [];
+
+  for(i = 0; i < Item.allItems.length; i++){
+    ratio.push((Item.allItems[i].timesClicked/Item.allItems[i].timesShown)*100);
+  }
+
+
+  new Chart(ctx, {
+    type: 'bar',
+
+    data: {
+      labels: itemNamesArr,
+      datasets: [{
+        label: 'Percentage of times clicked to times shown',
+        backgroundColor: 'rgb(50, 180, 146, 1)',
+        borderColor: '#2A3842',
+        data: ratio
+      }]
+
+    },
+
+    options: {
+      scales: {
         yAxes: [{
           ticks: {
             beginAtZero: true

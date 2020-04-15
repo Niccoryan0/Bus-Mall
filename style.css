@@ -32,3 +32,9 @@ ul {
     background-position: 0% 50%;
   }
 }
+
+.chart{
+  height: 600px;
+  width: 600px;
+  margin: 80px 30px;
+}

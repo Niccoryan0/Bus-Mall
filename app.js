@@ -85,7 +85,7 @@ function handleVotes(voteEvent){
     ulEl.remove();
     headerEl.remove();
     itemChartHead.textContent = 'Here\'s how many times you were shown and clicked on each image:';
-    ratioChartHead.textContent = 'Here\s the clicked to shown ratio:';
+    ratioChartHead.textContent = 'Here\'s the clicked to shown ratio:';
     renderItemChart();
     renderRatioChart();
 
@@ -144,6 +144,7 @@ function renderItemChart(){
   }
 
 
+  // eslint-disable-next-line no-undef
   new Chart(ctx, {
     type: 'bar',
 
@@ -163,6 +164,7 @@ function renderItemChart(){
     },
 
     options: {
+      responsive: true,
       scales: {
         xAxes: [{
           stacked: true
@@ -195,6 +197,7 @@ function renderRatioChart(){
   }
 
 
+  // eslint-disable-next-line no-undef
   new Chart(ctx, {
     type: 'bar',
 
@@ -210,6 +213,7 @@ function renderRatioChart(){
     },
 
     options: {
+      responsive: true,
       scales: {
         yAxes: [{
           ticks: {

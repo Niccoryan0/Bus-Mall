@@ -10,8 +10,22 @@ body{
 ul {
   width: fit-content;
   list-style-type: none;
-}
+  display: flex;
+  flex-direction: row;
 
+}
+li:nth-child(2){
+  margin: 0px 15px;
+}
+button{
+  border-style: none;
+  padding: 5px 10px;
+  background-color: red;
+  color: white;
+}
+button:hover{
+  background-color:gray;
+}
 
 
 

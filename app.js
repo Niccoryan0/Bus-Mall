@@ -2,18 +2,16 @@
 var ulEl = document.getElementById('list');
 var headerEl = document.getElementById('header');
 var currentRandomIndices = [];
-// ulEl.width = 'fit-content';
-// Create a constructor function that creates an object associated with each product, and has the following properties:
-// Name of the product
-// File path of image
+
 Item.allItems = [];
-function Item(itemName, itemImageSrc){
+function Item(itemName, itemImageSrc, timesClicked = 0, timesShown = 0){
   this.itemName = itemName;
   this.itemImageSrc = itemImageSrc;
-  this.timesClicked = 0;
-  this.timesShown = 0;
+  this.timesClicked = timesClicked;
+  this.timesShown = timesShown;
   Item.allItems.push(this);
 }
+
 
 Item.numImages = 3;
 Item.numOfImageCycles = 10;
@@ -24,7 +22,7 @@ Item.prototype.renderItem = function(){
   var newImg = document.createElement('img');
   newImg.src = this.itemImageSrc;
   newImg.id = this.itemName;
-  newImg.height = '400';
+  newImg.height = '300';
 
   var newPEl = document.createElement('p');
   newPEl.textContent = 'Votes: ' + this.timesClicked;
@@ -34,7 +32,7 @@ Item.prototype.renderItem = function(){
   ulEl.appendChild(newLiEl);
 };
 
-// Create an algorithm that will randomly generate three unique product images from the images directory and display them side-by-side-by-side in the browser window.
+
 function getRandomNums() {
   var randomNums = [];
 
@@ -66,10 +64,12 @@ function renderPage() {
     Item.allItems[randomNums[i]].renderItem();
   }
 }
-// Attach an event listener to the section of the HTML page where the images are going to be displayed.
 
 var clickCounter = 0;
 function handleVotes(voteEvent){
+  var itemsMadeStringy = JSON.stringify(Item.allItems);
+  localStorage.setItem('itemsFromLocalStorage', itemsMadeStringy);
+
   var itemChartHead = document.getElementById('itemChartHead');
   var ratioChartHead =document.getElementById('ratioChartHead');
   if (clickCounter < Item.numOfImageCycles){
@@ -91,33 +91,52 @@ function handleVotes(voteEvent){
 
 
   }
+
 }
 
-new Item('Bag', 'img/bag.jpg');
-new Item('Banana', 'img/banana.jpg');
-new Item('Bathroom', 'img/bathroom.jpg');
-new Item('Breakfast', 'img/breakfast.jpg');
-new Item('Bubblegum', 'img/bubblegum.jpg');
-new Item('Chair', 'img/chair.jpg');
-new Item('Cthulhu', 'img/cthulhu.jpg');
-new Item('Dog duck', 'img/dog-duck.jpg');
-new Item('Dragon', 'img/dragon.jpg');
-new Item('Pen', 'img/pen.jpg');
-new Item('Pet sweep', 'img/pet-sweep.jpg');
-new Item('Scissors', 'img/scissors.jpg');
-new Item('Shark', 'img/shark.jpg');
-new Item('Sweep', 'img/sweep.png');
-new Item('Tauntaun', 'img/tauntaun.jpg');
-new Item('Unicorn', 'img/unicorn.jpg');
-new Item('Usb', 'img/usb.gif');
-new Item('Water can', 'img/water-can.jpg');
-new Item('Wine glass', 'img/wine-glass.jpg');
+if (!localStorage.getItem('itemsFromLocalStorage')){
+  new Item('Bag', 'img/bag.jpg');
+  new Item('Banana', 'img/banana.jpg');
+  new Item('Bathroom', 'img/bathroom.jpg');
+  new Item('Breakfast', 'img/breakfast.jpg');
+  new Item('Bubblegum', 'img/bubblegum.jpg');
+  new Item('Chair', 'img/chair.jpg');
+  new Item('Cthulhu', 'img/cthulhu.jpg');
+  new Item('Dog duck', 'img/dog-duck.jpg');
+  new Item('Dragon', 'img/dragon.jpg');
+  new Item('Pen', 'img/pen.jpg');
+  new Item('Pet sweep', 'img/pet-sweep.jpg');
+  new Item('Scissors', 'img/scissors.jpg');
+  new Item('Shark', 'img/shark.jpg');
+  new Item('Sweep', 'img/sweep.png');
+  new Item('Tauntaun', 'img/tauntaun.jpg');
+  new Item('Unicorn', 'img/unicorn.jpg');
+  new Item('Usb', 'img/usb.gif');
+  new Item('Water can', 'img/water-can.jpg');
+  new Item('Wine glass', 'img/wine-glass.jpg');
+} else {
+  var itemsFromLocalAsAString = localStorage.getItem('itemsFromLocalStorage');
+  var itemsFromLocalAsArray = JSON.parse(itemsFromLocalAsAString);
 
-
+  for (var i = 0; i < itemsFromLocalAsArray.length; i++){
+    var reItemName = itemsFromLocalAsArray[i].itemName;
+    var reItemImageSrc = itemsFromLocalAsArray[i].itemImageSrc;
+    var reTimesClicked = itemsFromLocalAsArray[i].timesClicked;
+    var reTimesShown = itemsFromLocalAsArray[i].timesShown;
+    new Item(reItemName, reItemImageSrc, reTimesClicked, reTimesShown);
+  }
+}
 
 
 renderPage();
 ulEl.addEventListener('click', handleVotes);
+
+
+var resetButton = document.getElementById('resetButton');
+resetButton.addEventListener('click', function(){
+  localStorage.clear();
+  location.reload();
+});
 
 
 function renderItemChart(){
@@ -164,7 +183,7 @@ function renderItemChart(){
     },
 
     options: {
-      responsive: true,
+      responsive: false,
       scales: {
         xAxes: [{
           stacked: true
@@ -213,7 +232,7 @@ function renderRatioChart(){
     },
 
     options: {
-      responsive: true,
+      responsive: false,
       scales: {
         yAxes: [{
           ticks: {
@@ -224,3 +243,5 @@ function renderRatioChart(){
     }
   });
 }
+
+

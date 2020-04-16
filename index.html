@@ -9,19 +9,20 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>
-  <main id='main'>
-    <h1 id='header'>Please select your preferred item:</h1>
-    <ul id='list'></ul>
+  <button type="button" id="resetButton">Click to reset Local Storage & start over</button>
+  <main id="main">
+    <h1 id="header">Please select your preferred item:</h1>
+    <ul id="list"></ul>
   </main>
 
-  <section class='chart'>
-    <h1 id='itemChartHead'></h2>
-    <canvas id='itemChart' width=300 height=300></canvas>
+  <section class="itemChart">
+    <h1 id="itemChartHead"></h2>
+    <canvas id="itemChart" width=700 height=700></canvas>
   </section>
 
-  <section class='chart'>
-    <h1 id='ratioChartHead'></h2>
-    <canvas id='ratioChart' width=300 height=300></canvas>
+  <section class="ratioChart">
+    <h1 id="ratioChartHead"></h2>
+    <canvas id="ratioChart" width=700 height=700></canvas>
   </section>
 
   <script src="app.js"></script>

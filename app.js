@@ -1,8 +1,10 @@
 'use strict';
+
 var ulEl = document.getElementById('list');
 var headerEl = document.getElementById('header');
 var currentRandomIndices = [];
 
+// Class Constructor to make individual items with info including name, image source, times the picutre was clicked and times it was shown
 Item.allItems = [];
 function Item(itemName, itemImageSrc, timesClicked = 0, timesShown = 0){
   this.itemName = itemName;
@@ -12,10 +14,11 @@ function Item(itemName, itemImageSrc, timesClicked = 0, timesShown = 0){
   Item.allItems.push(this);
 }
 
-
+// Code is dynamic so these numbers can be changed to change number of images on screen and number of times images will display before graphs are shown
 Item.numImages = 3;
 Item.numOfImageCycles = 10;
 
+// Render method for putting an item on screen
 Item.prototype.renderItem = function(){
   var newLiEl = document.createElement('li');
 
@@ -32,14 +35,14 @@ Item.prototype.renderItem = function(){
   ulEl.appendChild(newLiEl);
 };
 
-
+// Function for getting random nums to choose which pics to display
 function getRandomNums() {
   var randomNums = [];
 
   while(randomNums.length < Item.numImages){
     var randomNum = Math.floor(Math.random() * Item.allItems.length);
     var checkRepeat = false;
-
+    // Check if each image was in the last round of images
     for(var i = 0; i < currentRandomIndices.length; i++){
       if(currentRandomIndices.includes(randomNum)){
         checkRepeat = true;
@@ -47,7 +50,7 @@ function getRandomNums() {
       }
     }
 
-
+    // Check if each image is in the current round of images AND if previous check returned true or false, only add numbers if neither are true
     if(!randomNums.includes(randomNum) && !checkRepeat){
       Item.allItems[randomNum].timesShown++;
       randomNums.push(randomNum);
@@ -57,6 +60,8 @@ function getRandomNums() {
   return randomNums;
 }
 
+
+// Render page by getting the random numbers from the previous function and rendering the corresponding images to the screen.
 function renderPage() {
   var randomNums = getRandomNums();
   currentRandomIndices = randomNums;
@@ -65,6 +70,8 @@ function renderPage() {
   }
 }
 
+
+// Event handler for clicks
 var clickCounter = 0;
 function handleVotes(voteEvent){
   var itemsMadeStringy = JSON.stringify(Item.allItems);
@@ -72,16 +79,20 @@ function handleVotes(voteEvent){
 
   var itemChartHead = document.getElementById('itemChartHead');
   var ratioChartHead =document.getElementById('ratioChartHead');
+  // Control numnber of times images display before graphs
   if (clickCounter < Item.numOfImageCycles){
     clickCounter++;
+    // Increase click count for selected image
     for (var i = 0; i < Item.allItems.length; i++){
       if(voteEvent.target.id === Item.allItems[i].itemName){
         Item.allItems[i].timesClicked++;
       }
     }
+    // Rerender page wiith new images
     ulEl.innerHTML = '';
     renderPage();
   } else if (clickCounter === Item.numOfImageCycles){
+    // When click count is reached, display graphs
     ulEl.remove();
     headerEl.remove();
     itemChartHead.textContent = 'Here\'s how many times you were shown and clicked on each image:';
@@ -131,14 +142,14 @@ if (!localStorage.getItem('itemsFromLocalStorage')){
 renderPage();
 ulEl.addEventListener('click', handleVotes);
 
-
+// Button click handler to reset local storage and refresh page
 var resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', function(){
   localStorage.clear();
   location.reload();
 });
 
-
+// Function to render the first chart, times clickes and times shown in a stacked bar
 function renderItemChart(){
   var ctx = document.getElementById('itemChart').getContext('2d');
   var ratio = [];
@@ -198,6 +209,8 @@ function renderItemChart(){
     }
   });
 }
+
+// Function to render the 2nd chart, percentage of times clicked to times shown
 function renderRatioChart(){
   var ctx = document.getElementById('ratioChart').getContext('2d');
 
@@ -210,7 +223,7 @@ function renderRatioChart(){
   }
 
   var ratio = [];
-
+  // Percent calc
   for(i = 0; i < Item.allItems.length; i++){
     ratio.push((Item.allItems[i].timesClicked/Item.allItems[i].timesShown)*100);
   }

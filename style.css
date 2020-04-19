@@ -3,8 +3,15 @@ body{
   background: linear-gradient(-45deg, rgba(210, 143, 255, 0.5), rgba(255, 0, 242, 0.5),
   rgba(255, 0, 200, 0.5), rgba(230, 1, 251, 0.5));
 
- background-size: 600% 600%;
- animation: gradient 15s infinite;
+  background-size: 600% 600%;
+  animation: gradient 15s infinite;
+
+  font-family: sans-serif;
+  color: rgba(27, 24, 27, 0.734)
+}
+
+h1 {
+  font-family: serif;
 }
 
 ul {
@@ -17,12 +24,14 @@ ul {
 li:nth-child(2){
   margin: 0px 15px;
 }
+
 button{
   border-style: none;
   padding: 5px 10px;
   background-color: red;
   color: white;
 }
+
 button:hover{
   background-color:gray;
 }
